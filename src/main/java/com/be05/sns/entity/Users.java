@@ -12,7 +12,7 @@ public class Users {
 
     // 필수 입력사항
     @Column(nullable = false) // (unique = true) -> sqlite 자체 error 존재
-    private String userName;
+    private String username;
     @Column(nullable = false)
     private String password;
 
