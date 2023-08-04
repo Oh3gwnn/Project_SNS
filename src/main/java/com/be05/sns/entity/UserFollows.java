@@ -8,11 +8,11 @@ import lombok.Data;
 public class UserFollows {
     @Id
     @ManyToOne
-    private User userId;
+    private Users userId;
 
     @ManyToOne
-    private User follower;
+    private Users follower;
 
     @ManyToOne
-    private User following;
+    private Users following;
 }

@@ -23,5 +23,5 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private Users userId;
 }

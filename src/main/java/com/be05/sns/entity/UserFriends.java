@@ -8,13 +8,13 @@ import lombok.Data;
 public class UserFriends {
     @Id
     @ManyToOne
-    private User userId;
+    private Users userId;
 
     @ManyToOne
     @JoinColumn(name = "from_user")
-    private User fromUser;
+    private Users fromUsers;
 
     @ManyToOne
     @JoinColumn(name = "to_user")
-    private User toUser;
+    private Users toUsers;
 }

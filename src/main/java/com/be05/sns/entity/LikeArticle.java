@@ -13,5 +13,5 @@ public class LikeArticle {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private Users userId;
 }
