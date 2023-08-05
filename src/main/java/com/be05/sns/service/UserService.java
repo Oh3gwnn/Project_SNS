@@ -5,6 +5,7 @@ import com.be05.sns.entity.Users;
 import com.be05.sns.repository.UserRepository;
 import com.be05.sns.token.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,8 +16,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
@@ -45,6 +48,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         String token = jwtUtils.generateToken(dto);
+        log.info("JWT Token : " + token);
         user.setToken(token);
         userRepository.save(user);
     }
