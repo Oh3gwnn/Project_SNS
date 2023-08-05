@@ -28,9 +28,9 @@ public class JwtUtils {
     }
 
     // JWT 생성
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDto userDto) {
         Claims jwtClaims = Jwts.claims()
-                .setSubject(userDetails.getUsername())
+                .setSubject(userDto.getUsername())
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plusSeconds(3600)));
 
