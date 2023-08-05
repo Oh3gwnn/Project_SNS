@@ -36,12 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (utils.validate(token)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
-                String userName = utils.parseClaims(token).getSubject();
+                String username = utils.parseClaims(token).getSubject();
 
                 AbstractAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 UserDto.builder()
-                                        .userName(userName)
+                                        .username(username)
                                         .build(), token, new ArrayList<>());
 
                 context.setAuthentication(authenticationToken);
