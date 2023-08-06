@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -32,7 +31,7 @@ public class JwtUtils {
         Claims jwtClaims = Jwts.claims()
                 .setSubject(userDto.getUsername())
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(3600)));
+                .setExpiration(Date.from(Instant.now().plusSeconds(3600))); // 1시간 후 만료
 
         return Jwts.builder()
                 .setClaims(jwtClaims)
