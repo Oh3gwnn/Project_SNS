@@ -21,9 +21,12 @@ public class WebSecurityConfig {
                 // CSRF 보안 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authHttp -> authHttp
+                        .requestMatchers("/upload/profile")
+                        .authenticated() // 인증된 사용자만
                         .requestMatchers("/login", "/register")
                         // 모든 접근 허용(나머지 인증 후 허용)
                         .anonymous().anyRequest().authenticated()
+
                 ).sessionManagement(sessionManagement -> sessionManagement
                         // 세션 (생성 X, STATELESS), JWT 토큰 기반 인증을 사용하기 위한 설정
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
