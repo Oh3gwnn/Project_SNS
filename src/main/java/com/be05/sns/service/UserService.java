@@ -7,11 +7,17 @@ import com.be05.sns.token.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 @Service
@@ -50,6 +56,39 @@ public class UserService {
         String token = jwtUtils.generateToken(dto);
         log.info("JWT Token : " + token);
         user.setToken(token);
+        userRepository.save(user);
+    }
+
+    // 프로필 업로드
+    public void uploadImage(MultipartFile profileFile,
+                            Authentication authentication) {
+        Users user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        String userName = authentication.getName();
+        String dirPath = String.format("profile/%s/", userName);
+
+        try {
+            Files.createDirectories(Path.of(dirPath));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String originalFilename = profileFile.getOriginalFilename();
+        assert originalFilename != null;
+        String[] fileNameSplit = originalFilename.split("\\.");
+        String extension = fileNameSplit[fileNameSplit.length - 1];
+
+        String fileName = userName + "." + extension;
+        String filePath = dirPath + fileName;
+
+        try {
+            profileFile.transferTo(Path.of(filePath));
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        user.setProfileImg(String.format("/static/%s", fileName));
         userRepository.save(user);
     }
 
