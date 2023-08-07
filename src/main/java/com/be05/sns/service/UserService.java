@@ -46,8 +46,7 @@ public class UserService {
         if (dto.getUsername().isEmpty() || dto.getPassword().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디와 비밀번호를 입력해주세요.");
 
-        Users user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException(dto.getUsername()));
+        Users user = getUsers(dto.getUsername());
 
         UserDetails userDetails = loadUserByUsername(dto.getUsername());
         if (!passwordEncoder.matches(dto.getPassword(), userDetails.getPassword())) // 순서 조심
@@ -62,9 +61,7 @@ public class UserService {
     // 프로필 업로드
     public void uploadImage(MultipartFile profileFile,
                             Authentication authentication) {
-        Users user = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
+        Users user = getUsers(authentication.getName());
         String userName = authentication.getName();
         String dirPath = String.format("images/profile/%s/", userName);
         String fileName = imageFormatting.uploadImage(profileFile, userName, dirPath);
@@ -81,6 +78,11 @@ public class UserService {
         return UserDto.fromEntity(user);
     }
 
+    // 유저 Entity 불러오기
+    private Users getUsers(String userName) {
+        return userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
+    }
 
     public boolean userExists(String username) {
         return this.userRepository.existsByUsername(username);
