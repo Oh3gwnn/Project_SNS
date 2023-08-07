@@ -1,6 +1,7 @@
 package com.be05.sns.service;
 
-import com.be05.sns.dto.AllArticleFromUserDto;
+import com.be05.sns.dto.Article.AUserFeedDto;
+import com.be05.sns.dto.Article.UserFeedsDto;
 import com.be05.sns.dto.ArticleDto;
 import com.be05.sns.entity.Article;
 import com.be05.sns.entity.Users;
@@ -16,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
@@ -30,7 +33,7 @@ public class ArticleService {
         articleRepository.save(dto.newArticle(user));
     }
     // 2. writer all feed
-    public Page<AllArticleFromUserDto> readAllFeed(Long userId, Authentication authentication) {
+    public Page<UserFeedsDto> readAllFeed(Long userId, Authentication authentication) {
         Users writer = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -41,6 +44,13 @@ public class ArticleService {
         Page<Article> articles = articleRepository
                 .findAllByUserId_Username(writer.getUsername(), pageable);
 
-        return articles.map(AllArticleFromUserDto::fromAllArticle);
+        return articles.map(UserFeedsDto::fromAllFeed);
+    }
+
+    // 3. read a feed
+    public AUserFeedDto read(Long userId, Long articleId, Authentication authentication) {
+        Optional<Article> feed = articleRepository.findByIdAndUserId_Id(userId, articleId);
+        if (feed.isPresent()) return AUserFeedDto.fromFeedInfo(feed.get());
+        else throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 }

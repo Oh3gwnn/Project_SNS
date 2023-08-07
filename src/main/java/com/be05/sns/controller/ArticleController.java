@@ -1,6 +1,7 @@
 package com.be05.sns.controller;
 
-import com.be05.sns.dto.AllArticleFromUserDto;
+import com.be05.sns.dto.Article.AUserFeedDto;
+import com.be05.sns.dto.Article.UserFeedsDto;
 import com.be05.sns.dto.ArticleDto;
 import com.be05.sns.dto.ResponseDto;
 import com.be05.sns.service.ArticleService;
@@ -24,8 +25,15 @@ public class ArticleController {
     }
 
     @GetMapping("/read/{userId}")
-    public Page<AllArticleFromUserDto> readFeed(@PathVariable("userId") Long userId,
-                                                Authentication authentication) {
+    public Page<UserFeedsDto> readFeed(@PathVariable("userId") Long userId,
+                                       Authentication authentication) {
         return articleService.readAllFeed(userId, authentication);
+    }
+
+    @GetMapping("/read/{userId}/{articleId}")
+    public AUserFeedDto readFeed(@PathVariable("userId") Long userId,
+                                 @PathVariable("articleId") Long articleId,
+                                 Authentication authentication) {
+        return articleService.read(userId, articleId, authentication);
     }
 }
