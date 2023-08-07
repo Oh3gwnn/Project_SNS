@@ -25,7 +25,7 @@ import java.nio.file.Path;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
-
+    private final ImageFormattingService imageFormatting;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
@@ -66,28 +66,8 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         String userName = authentication.getName();
-        String dirPath = String.format("profile/%s/", userName);
-
-        try {
-            Files.createDirectories(Path.of(dirPath));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        String originalFilename = profileFile.getOriginalFilename();
-        assert originalFilename != null;
-        String[] fileNameSplit = originalFilename.split("\\.");
-        String extension = fileNameSplit[fileNameSplit.length - 1];
-
-        String fileName = userName + "." + extension;
-        String filePath = dirPath + fileName;
-
-        try {
-            profileFile.transferTo(Path.of(filePath));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+        String dirPath = String.format("images/profile/%s/", userName);
+        String fileName = imageFormatting.uploadImage(profileFile, userName, dirPath);
         user.setProfileImg(String.format("/static/%s", fileName));
         userRepository.save(user);
     }
