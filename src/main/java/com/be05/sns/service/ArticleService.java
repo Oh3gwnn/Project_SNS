@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -37,24 +38,21 @@ public class ArticleService {
     public void createFeed(String title, String content,
                            List<MultipartFile> imageFiles,
                            Authentication authentication) {
-        Users user = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Users user = getUsers(authentication.getName());
 
         ArticleDto articleDto = new ArticleDto().newArticle(user, title, content);
         Article article = modelMapper.map(articleDto, Article.class); // ModelConfig 참고
         articleRepository.save(article);
 
         if (imageFiles != null && !imageFiles.isEmpty()) {
-            uploadImages(authentication, article, imageFiles);
+            uploadImages(article, imageFiles);
             articleRepository.save(article);
         }
     }
 
     // 1-1. 여러 이미지 업로드
-    private void uploadImages(Authentication authentication,
-                              Article article,
+    private void uploadImages(Article article,
                               List<MultipartFile> imageFiles) {
-        String userName = authentication.getName();
         String dirPath = String.format("images/article/%d/", article.getId());
 
         int number = 0;
@@ -70,24 +68,26 @@ public class ArticleService {
     }
 
     // 2. writer all feed
-    public Page<UserFeedsDto> readAllFeed(Long userId, Authentication authentication) {
-        Users writer = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        Users viewer = userRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public Page<UserFeedsDto> readAllFeed(String userName) {
+        Users user = getUsers(userName);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Page<Article> articles = articleRepository
-                .findAllByUserId_Username(writer.getUsername(), pageable);
+                .findAllByUserId_Username(user.getUsername(), pageable);
 
         return articles.map(UserFeedsDto::fromAllFeed);
     }
 
     // 3. read a feed
-    public AUserFeedDto read(Long userId, Long articleId, Authentication authentication) {
-        Optional<Article> feed = articleRepository.findByIdAndUserId_Id(userId, articleId);
+    public AUserFeedDto read(Long articleId) {
+        Optional<Article> feed = articleRepository.findById(articleId);
         if (feed.isPresent()) return AUserFeedDto.fromFeedInfo(feed.get());
         else throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    // 유저 Entity 불러오기
+    private Users getUsers(String userName) {
+        return userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
     }
 }
