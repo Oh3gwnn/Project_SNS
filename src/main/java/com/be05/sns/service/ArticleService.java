@@ -91,7 +91,13 @@ public class ArticleService {
     // 3. read a feed
     public AUserFeedDto read(Long articleId) {
         Optional<Article> feed = articleRepository.findById(articleId);
-        if (feed.isPresent()) return AUserFeedDto.fromFeedInfo(feed.get());
+
+        if (feed.isPresent()) {
+            List<ArticleImages> images = imagesRepository.findAllByArticleId_Id(articleId);
+            List<String> imageUrls = images.stream()
+                    .map(ArticleImages::getImageUrl).toList();
+            return AUserFeedDto.fromFeedInfo(feed.get(), imageUrls);
+        }
         else throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
