@@ -15,7 +15,6 @@ public class Article {
     private String title;
     @Column(nullable = false)
     private String content;
-    private Boolean draft;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "deleted_at")
