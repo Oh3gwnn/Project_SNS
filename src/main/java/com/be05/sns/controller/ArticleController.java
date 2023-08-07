@@ -28,16 +28,13 @@ public class ArticleController {
         return response.toMessage("피드를 생성했습니다.");
     }
 
-    @GetMapping("/read/{userId}")
-    public Page<UserFeedsDto> readFeed(@PathVariable("userId") Long userId,
-                                       Authentication authentication) {
-        return articleService.readAllFeed(userId, authentication);
+    @GetMapping("/{userName}")
+    public Page<UserFeedsDto> readFeed(@PathVariable("userName") String userName) {
+        return articleService.readAllFeed(userName);
     }
 
-    @GetMapping("/read/{userId}/{articleId}")
-    public AUserFeedDto readFeed(@PathVariable("userId") Long userId,
-                                 @PathVariable("articleId") Long articleId,
-                                 Authentication authentication) {
-        return articleService.read(userId, articleId, authentication);
+    @GetMapping("/read/{articleId}")
+    public AUserFeedDto readFeed(@PathVariable("articleId") Long articleId) {
+        return articleService.read(articleId);
     }
 }
