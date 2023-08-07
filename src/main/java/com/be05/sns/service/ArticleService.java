@@ -40,12 +40,22 @@ public class ArticleService {
                            Authentication authentication) {
         Users user = getUsers(authentication.getName());
 
+        // 피드 선 저장
         ArticleDto articleDto = new ArticleDto().newArticle(user, title, content);
         Article article = modelMapper.map(articleDto, Article.class); // ModelConfig 참고
         articleRepository.save(article);
 
+        // 여러 이미지 업로드 후 피드 저장
         if (imageFiles != null && !imageFiles.isEmpty()) {
             uploadImages(article, imageFiles);
+            articleRepository.save(article);
+        }
+
+        // 썸네일 추가 후 저장
+        ArticleImages articleImage =
+                imagesRepository.findByIdAndArticleId_Id(1L, article.getId());
+        if (articleImage != null) {
+            article.setThumbnail(articleImage.getImageUrl());
             articleRepository.save(article);
         }
     }

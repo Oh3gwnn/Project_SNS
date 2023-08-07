@@ -11,6 +11,7 @@ public class UserFeedsDto {
     private String userName;
     private String title;
     private String createdAt;
+    private String thumbnail;
 
     public static UserFeedsDto fromAllFeed(Article article) {
         return UserFeedsDto.builder()
@@ -18,6 +19,7 @@ public class UserFeedsDto {
                 .title(article.getTitle())
                 .createdAt(article.getCreatedAt()
                         .format(DateTimeFormatter.ofPattern("MM월 dd일(E) a HH시 mm분")))
+                .thumbnail(article.getThumbnail())
                 .build();
     }
 }
