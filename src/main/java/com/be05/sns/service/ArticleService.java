@@ -52,10 +52,10 @@ public class ArticleService {
         }
 
         // 썸네일 추가 후 저장
-        ArticleImages articleImage =
-                imagesRepository.findByIdAndArticleId_Id(1L, article.getId());
-        if (articleImage != null) {
-            article.setThumbnail(articleImage.getImageUrl());
+        ArticleImages firstImage =
+                imagesRepository.findFirstByArticleId_IdOrderByIdAsc(article.getId());
+        if (firstImage != null) {
+            article.setThumbnail(firstImage.getImageUrl());
             articleRepository.save(article);
         }
     }

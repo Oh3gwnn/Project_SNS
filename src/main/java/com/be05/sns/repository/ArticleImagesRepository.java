@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ArticleImagesRepository extends JpaRepository<ArticleImages, Long> {
-    ArticleImages findByIdAndArticleId_Id(Long id, Long articleId);
+    ArticleImages findFirstByArticleId_IdOrderByIdAsc(Long articleId);
     List<ArticleImages> findAllByArticleId_Id(Long articleId);
 }
