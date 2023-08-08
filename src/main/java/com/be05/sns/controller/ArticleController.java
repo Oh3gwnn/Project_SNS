@@ -29,8 +29,18 @@ public class ArticleController {
     }
 
     @GetMapping("/{userName}")
-    public Page<UserFeedsDto> readFeed(@PathVariable("userName") String userName) {
+    public Page<UserFeedsDto> readFollowFeeds(@PathVariable("userName") String userName) {
         return articleService.readAllFeed(userName);
+    }
+
+    @GetMapping("/follow")
+    public Page<UserFeedsDto> readFollowFeeds(Authentication authentication) {
+        return articleService.readAllFollowFeed(authentication);
+    }
+
+    @GetMapping("/friend")
+    public Page<UserFeedsDto> readFriendFeeds(Authentication authentication) {
+        return articleService.readAllFriendFeed(authentication);
     }
 
     @GetMapping("/read/{articleId}")

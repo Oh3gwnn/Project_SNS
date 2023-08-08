@@ -77,6 +77,34 @@ public class ArticleService {
         return articles.map(UserFeedsDto::fromAllFeed);
     }
 
+    // 2-1. Follow all feed
+    public Page<UserFeedsDto> readAllFollowFeed(Authentication authentication) {
+        Users user = getObj.getUser(authentication.getName());
+        List<UserFollows> followings = getObj.getFollow(user.getId());
+        List<String> followingList = followings.stream()
+                .map(userFollows -> userFollows.getFollowing().getUsername()).toList();
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        Page<Article> articles = articleRepository
+                .findAllByUserId_UsernameIn(followingList, pageable);
+
+        return articles.map(UserFeedsDto::fromAllFeed);
+    }
+
+    // 2-2. Friend all feed
+    public Page<UserFeedsDto> readAllFriendFeed(Authentication authentication) {
+        Users user = getObj.getUser(authentication.getName());
+        List<UserFriends> friends = getObj.getFriend(user.getId());
+        List<String> friendList = friends.stream()
+                .map(userFriends -> userFriends.getFromUser().getUsername()).toList();
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
+        Page<Article> articles = articleRepository
+                .findAllByUserId_UsernameIn(friendList, pageable);
+
+        return articles.map(UserFeedsDto::fromAllFeed);
+    }
+
     // 3. read a feed (피드 하나 읽어오기)
     public AFeedDto read(Long articleId) {
         Article feed = getObj.getArticle(articleId);

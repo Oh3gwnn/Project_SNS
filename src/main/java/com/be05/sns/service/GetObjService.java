@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GetObjService {
@@ -41,14 +43,24 @@ public class GetObjService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    // 해당 유저의 팔로우 불러오기
+    // 해당 유저 팔로우 불러오기(1:1)
     public UserFollows getFollow(Long follower, Long following) {
         return followRepository.findByFollower_IdAndFollowing_Id(follower, following);
     }
 
-    // 해당 유저의 친구 신청 불러오기
+    // 해당 유저 전체 팔로우 불러오기
+    public List<UserFollows> getFollow(Long userId) {
+        return followRepository.findByFollower_Id(userId);
+    }
+
+    // 해당 유저의 친구 신청 불러오기(1:1)
     public UserFriends getFriend(Long fromUser, Long toUser) {
         return friendRepository.findByFromUser_IdAndToUser_Id(fromUser, toUser);
+    }
+
+    // 해당 유저의 전체 친구 불러오기
+    public List<UserFriends> getFriend(Long userId) {
+        return friendRepository.findByToUser_IdAndStatus(userId, "친구");
     }
 
 

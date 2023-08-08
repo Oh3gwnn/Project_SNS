@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface FriendRepository extends JpaRepository<UserFriends, Long> {
     UserFriends findByFromUser_IdAndToUser_Id(Long fromUser, Long toUser);
+    List<UserFriends> findByToUser_IdAndStatus(Long toUser, String status);
     List<UserFriends> findAllByToUser_Username(String username);
 }
