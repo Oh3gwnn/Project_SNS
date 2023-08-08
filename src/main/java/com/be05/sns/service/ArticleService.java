@@ -40,24 +40,12 @@ public class ArticleService {
                            Authentication authentication) {
         Users user = getUsers(authentication.getName());
 
-        // 피드 선 저장
+        // 피드 먼저 저장
         ArticleDto articleDto = new ArticleDto().newArticle(user, title, content);
         Article article = modelMapper.map(articleDto, Article.class); // ModelConfig 참고
         articleRepository.save(article);
 
-        // 여러 이미지 업로드 후 피드 저장
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            uploadImages(article, imageFiles);
-            articleRepository.save(article);
-        }
-
-        // 썸네일 추가 후 저장
-        ArticleImages firstImage =
-                imagesRepository.findFirstByArticleId_IdOrderByIdAsc(article.getId());
-        if (firstImage != null) {
-            article.setThumbnail(firstImage.getImageUrl());
-            articleRepository.save(article);
-        }
+        saveImagesAndThumbnail(imageFiles, article);
     }
 
     // 1-1. 여러 이미지 업로드
@@ -99,6 +87,45 @@ public class ArticleService {
             return AUserFeedDto.fromFeedInfo(feed.get(), imageUrls);
         }
         else throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    // 피드 업데이트
+    public void updateFeed(Long articleId, String title, String content,
+                           List<String> deleteImages, List<MultipartFile> imageFiles,
+                           Authentication authentication) {
+        Users user = getUsers(authentication.getName());
+        Article preArticle = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!title.isEmpty()) preArticle.setTitle(title);
+        if (!content.isEmpty()) preArticle.setContent(content);
+        if (deleteImages != null && !deleteImages.isEmpty()) {
+            for (String deleteImage : deleteImages) {
+                ArticleImages articleImage =
+                        imagesRepository.findByImageUrlContaining(deleteImage);
+                imagesRepository.delete(articleImage);
+            }
+        }
+        articleRepository.save(preArticle);
+        saveImagesAndThumbnail(imageFiles, preArticle);
+    }
+
+    // 이미지, 썸네일 저장 메서드
+    private void saveImagesAndThumbnail(List<MultipartFile> imageFiles,
+                                        Article article) {
+        // 여러 이미지 업로드 후 피드 저장
+        if (imageFiles != null && !imageFiles.isEmpty()) {
+            uploadImages(article, imageFiles);
+            articleRepository.save(article);
+        }
+
+        // 썸네일 추가 후 저장
+        ArticleImages firstImage =
+                imagesRepository.findFirstByArticleId_IdOrderByIdAsc(article.getId());
+        if (firstImage != null) {
+            article.setThumbnail(firstImage.getImageUrl());
+            articleRepository.save(article);
+        }
     }
 
     // 유저 Entity 불러오기
