@@ -2,6 +2,7 @@ package com.be05.sns.service;
 
 import com.be05.sns.entity.Article;
 import com.be05.sns.entity.LikeArticle;
+import com.be05.sns.entity.LikeId;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +24,12 @@ public class LikeService {
         if (user.getPassword().equals(article.getUserId().getPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
+        LikeId likeId = new LikeId(article.getId(), user.getId());
         LikeArticle likeByUser = likeRepository
                 .findByUserId_UsernameAndArticleId_Id(user.getUsername(), articleId);
 
         if (likeByUser == null) {
-            LikeArticle like = new LikeArticle().newLikeThat(user, article);
+            LikeArticle like = new LikeArticle().newLikeThat(user, article, likeId);
             likeRepository.save(like);
             return "💖";
         } else {

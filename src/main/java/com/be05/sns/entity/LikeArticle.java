@@ -26,4 +26,12 @@ public class LikeArticle {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private Users userId;
+
+    public LikeArticle newLikeThat(Users user, Article article, LikeId likeId) {
+        LikeArticle like = new LikeArticle();
+        like.setId(likeId);
+        like.setArticleId(article);
+        like.setUserId(user);
+        return like;
+    }
 }
