@@ -1,5 +1,6 @@
 package com.be05.sns.dto.Article;
 
+import com.be05.sns.dto.comment.readCommentDto;
 import com.be05.sns.entity.Article;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +15,13 @@ public class AUserFeedDto {
     private String title;
     private String content;
     private String createdAt;
-    private List<String> imageUrls;
 
-    public static AUserFeedDto fromFeedInfo(Article article, List<String> imageUrls) {
+    private List<String> imageUrls;
+    private List<readCommentDto> comments;
+
+    public static AUserFeedDto fromFeedInfo(Article article,
+                                            List<String> imageUrls,
+                                            List<readCommentDto> comments) {
         return AUserFeedDto.builder()
                 .userName(article.getUserId().getUsername())
                 .title(article.getTitle())
@@ -24,6 +29,7 @@ public class AUserFeedDto {
                 .createdAt(article.getCreatedAt()
                         .format(DateTimeFormatter.ofPattern("MM월 dd일(E) a HH시 mm분")))
                 .imageUrls(imageUrls)
+                .comments(comments)
                 .build();
     }
 }
