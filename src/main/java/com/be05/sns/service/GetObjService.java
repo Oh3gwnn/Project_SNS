@@ -2,9 +2,11 @@ package com.be05.sns.service;
 
 import com.be05.sns.entity.Article;
 import com.be05.sns.entity.Comment;
+import com.be05.sns.entity.UserFollows;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.ArticleRepository;
 import com.be05.sns.repository.CommentRepository;
+import com.be05.sns.repository.FollowRepository;
 import com.be05.sns.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ public class GetObjService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
 
     // 해당 유저 불러오기(이름)
     public Users getUser(String userName) {
@@ -41,5 +44,10 @@ public class GetObjService {
     public Comment getComment(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    // 해당 유저의 팔로우 불러오기
+    public UserFollows getFollow(String fromUser, String toUser) {
+        return followRepository.findByFromUser_UsernameAndToUser_Username(fromUser, toUser);
     }
 }
