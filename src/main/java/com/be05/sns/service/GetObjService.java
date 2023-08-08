@@ -47,7 +47,7 @@ public class GetObjService {
     }
 
     // 해당 유저의 팔로우 불러오기
-    public UserFollows getFollow(String fromUser, String toUser) {
-        return followRepository.findByFromUser_UsernameAndToUser_Username(fromUser, toUser);
+    public UserFollows getFollow(Long follower, Long following) {
+        return followRepository.findByFollower_IdAndFollowing_Id(follower, following);
     }
 }

@@ -1,6 +1,7 @@
 package com.be05.sns.dto.follow;
 
 import com.be05.sns.entity.Users;
+import com.be05.sns.entity.embeddedId.FollowId;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
@@ -11,13 +12,15 @@ import lombok.Data;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FollowDto {
-    private Users fromUser;
-    private Users toUser;
+    private FollowId followId;
+    private Users follower;
+    private Users following;
 
-    public FollowDto toFollow(Users user, Users targetUser) {
+    public FollowDto toFollow(Users user, Users targetUser, FollowId followId) {
         return FollowDto.builder()
-                .fromUser(user)
-                .toUser(targetUser)
+                .followId(followId)
+                .follower(user)
+                .following(targetUser)
                 .build();
     }
 }

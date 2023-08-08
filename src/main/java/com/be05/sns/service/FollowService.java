@@ -3,6 +3,7 @@ package com.be05.sns.service;
 import com.be05.sns.dto.follow.FollowDto;
 import com.be05.sns.entity.UserFollows;
 import com.be05.sns.entity.Users;
+import com.be05.sns.entity.embeddedId.FollowId;
 import com.be05.sns.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,10 +27,11 @@ public class FollowService {
         if (authUser.getPassword().equals(targetUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        UserFollows follows = getObj.getFollow(authUser.getUsername(), targetUser.getUsername());
+        FollowId followId = new FollowId(authUser.getId(), targetUser.getId());
+        UserFollows follows = getObj.getFollow(authUser.getId(), targetUser.getId());
 
         if (follows == null) {
-            FollowDto dto = new FollowDto().toFollow(authUser, targetUser);
+            FollowDto dto = new FollowDto().toFollow(authUser, targetUser, followId);
             UserFollows follow = modelMapper.map(dto, UserFollows.class);
             followRepository.save(follow);
             return "님을 팔로우 하셨습니다.";
@@ -48,7 +50,7 @@ public class FollowService {
         if (authUser.getPassword().equals(targetUser.getPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-        UserFollows follows = getObj.getFollow(targetUser.getUsername(), authUser.getUsername());
+        UserFollows follows = getObj.getFollow(targetUser.getId(), authUser.getId());
         followRepository.delete(follows);
     }
 }
