@@ -2,7 +2,7 @@ package com.be05.sns.service;
 
 import com.be05.sns.entity.Article;
 import com.be05.sns.entity.LikeArticle;
-import com.be05.sns.entity.LikeId;
+import com.be05.sns.entity.embeddedId.LikeId;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;

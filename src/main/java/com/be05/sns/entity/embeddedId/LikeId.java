@@ -1,4 +1,4 @@
-package com.be05.sns.entity;
+package com.be05.sns.entity.embeddedId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

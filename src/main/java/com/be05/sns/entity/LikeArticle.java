@@ -1,9 +1,9 @@
 package com.be05.sns.entity;
 
+import com.be05.sns.entity.embeddedId.LikeId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.FetchType.LAZY;
