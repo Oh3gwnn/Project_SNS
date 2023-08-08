@@ -1,8 +1,8 @@
 package com.be05.sns.controller;
 
+import com.be05.sns.dto.ResponseDto;
 import com.be05.sns.dto.article.AUserFeedDto;
 import com.be05.sns.dto.article.UserFeedsDto;
-import com.be05.sns.dto.ResponseDto;
 import com.be05.sns.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,6 @@
 package com.be05.sns.token;
 
-import com.be05.sns.dto.user.UserDto;
+import com.be05.sns.dto.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

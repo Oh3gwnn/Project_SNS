@@ -1,6 +1,6 @@
 package com.be05.sns.service;
 
-import com.be05.sns.dto.comment.CommentDto;
+import com.be05.sns.dto.CommentDto;
 import com.be05.sns.entity.Article;
 import com.be05.sns.entity.Comment;
 import com.be05.sns.entity.Users;

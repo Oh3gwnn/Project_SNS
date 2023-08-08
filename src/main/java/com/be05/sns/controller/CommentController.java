@@ -1,6 +1,6 @@
 package com.be05.sns.controller;
 
-import com.be05.sns.dto.comment.CommentDto;
+import com.be05.sns.dto.CommentDto;
 import com.be05.sns.dto.ResponseDto;
 import com.be05.sns.service.CommentService;
 import lombok.RequiredArgsConstructor;

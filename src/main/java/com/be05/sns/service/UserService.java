@@ -1,6 +1,6 @@
 package com.be05.sns.service;
 
-import com.be05.sns.dto.user.UserDto;
+import com.be05.sns.dto.UserDto;
 import com.be05.sns.dto.user.UserInfo;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.UserRepository;

@@ -1,7 +1,7 @@
 package com.be05.sns.controller;
 
 import com.be05.sns.dto.ResponseDto;
-import com.be05.sns.dto.user.UserDto;
+import com.be05.sns.dto.UserDto;
 import com.be05.sns.dto.user.UserInfo;
 import com.be05.sns.service.UserService;
 import lombok.RequiredArgsConstructor;
