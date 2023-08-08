@@ -1,8 +1,8 @@
 package com.be05.sns.service;
 
-import com.be05.sns.dto.article.AUserFeedDto;
+import com.be05.sns.dto.feed.AFeedDto;
 import com.be05.sns.dto.ArticleDto;
-import com.be05.sns.dto.article.UserFeedsDto;
+import com.be05.sns.dto.feed.UserFeedsDto;
 import com.be05.sns.dto.comment.readCommentDto;
 import com.be05.sns.entity.*;
 import com.be05.sns.repository.ArticleImagesRepository;
@@ -78,7 +78,7 @@ public class ArticleService {
     }
 
     // 3. read a feed (피드 하나 읽어오기)
-    public AUserFeedDto read(Long articleId) {
+    public AFeedDto read(Long articleId) {
         Article feed = getObj.getArticle(articleId);
 
         // 이미지 리스트
@@ -94,7 +94,7 @@ public class ArticleService {
         // 좋아요 수
         long likeCount = feed.getLikes().size();
 
-        return AUserFeedDto.fromFeedInfo(feed, imageUrls, commentList, likeCount);
+        return AFeedDto.fromFeedInfo(feed, imageUrls, commentList, likeCount);
     }
 
     // 4. 피드 업데이트(제목, 내용, 이미지 수정 및 삭제)

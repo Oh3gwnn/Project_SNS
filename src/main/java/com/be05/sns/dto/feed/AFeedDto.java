@@ -1,4 +1,4 @@
-package com.be05.sns.dto.article;
+package com.be05.sns.dto.feed;
 
 import com.be05.sns.dto.comment.readCommentDto;
 import com.be05.sns.entity.Article;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class AUserFeedDto {
+public class AFeedDto {
     private String userName;
     private String title;
     private String content;
@@ -20,11 +20,11 @@ public class AUserFeedDto {
     private List<readCommentDto> comments;
     private Long like;
 
-    public static AUserFeedDto fromFeedInfo(Article article,
-                                            List<String> imageUrls,
-                                            List<readCommentDto> comments,
-                                            Long likeCount) {
-        return AUserFeedDto.builder()
+    public static AFeedDto fromFeedInfo(Article article,
+                                        List<String> imageUrls,
+                                        List<readCommentDto> comments,
+                                        Long likeCount) {
+        return AFeedDto.builder()
                 .userName(article.getUserId().getUsername())
                 .title(article.getTitle())
                 .content(article.getContent())
