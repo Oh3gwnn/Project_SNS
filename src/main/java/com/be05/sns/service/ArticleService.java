@@ -4,10 +4,7 @@ import com.be05.sns.dto.Article.AUserFeedDto;
 import com.be05.sns.dto.Article.UserFeedsDto;
 import com.be05.sns.dto.ArticleDto;
 import com.be05.sns.dto.comment.readCommentDto;
-import com.be05.sns.entity.Article;
-import com.be05.sns.entity.ArticleImages;
-import com.be05.sns.entity.Comment;
-import com.be05.sns.entity.Users;
+import com.be05.sns.entity.*;
 import com.be05.sns.repository.ArticleImagesRepository;
 import com.be05.sns.repository.ArticleRepository;
 import com.be05.sns.repository.CommentRepository;
@@ -30,12 +27,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
+    private final GetObjService getObj;
+    private final ModelMapper modelMapper;
+    private final ImageFormattingService imageFormatting;
+
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
     private final ArticleImagesRepository imagesRepository;
-    private final ImageFormattingService imageFormatting;
-    private final ModelMapper modelMapper;
-    private final GetObjService getObj;
 
     // 1. create feed
     public void createFeed(String title, String content,
@@ -83,15 +81,20 @@ public class ArticleService {
     public AUserFeedDto read(Long articleId) {
         Article feed = getObj.getArticle(articleId);
 
+        // 이미지 리스트
         List<ArticleImages> images = imagesRepository.findAllByArticleId_Id(articleId);
         List<String> imageUrls = images.stream()
                 .map(ArticleImages::getImageUrl).toList();
 
+        // 댓글 리스트
         List<Comment> comments = commentRepository.findAllByArticleId_Id(articleId);
         List<readCommentDto> commentList = comments.stream()
                 .map(readCommentDto::fromComment).toList();
 
-        return AUserFeedDto.fromFeedInfo(feed, imageUrls, commentList);
+        // 좋아요 수
+        long likeCount = feed.getLikes().size();
+
+        return AUserFeedDto.fromFeedInfo(feed, imageUrls, commentList, likeCount);
     }
 
     // 4. 피드 업데이트(제목, 내용, 이미지 수정 및 삭제)
