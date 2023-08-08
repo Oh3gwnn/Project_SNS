@@ -22,17 +22,20 @@ public class ImageFormattingService {
 
         String originalFilename = file.getOriginalFilename();
         assert originalFilename != null;
-        String[] fileNameSplit = originalFilename.split("\\.");
-        String extension = fileNameSplit[fileNameSplit.length - 1];
-
-        String fileName = userName + "." + extension;
-        String filePath = dirPath + fileName;
+        // 이미지 이름을 originalFile 그대로
+//        String[] fileNameSplit = originalFilename.split("\\.");
+//        String extension = fileNameSplit[fileNameSplit.length - 1];
+//
+//        String fileName = userName + "." + extension;
+//        String filePath = dirPath + fileName;
+        String filePath = dirPath + originalFilename;
 
         try {
             file.transferTo(Path.of(filePath));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return fileName;
+//        return fileName;
+        return originalFilename;
     }
 }
