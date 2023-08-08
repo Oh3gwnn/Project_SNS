@@ -7,6 +7,9 @@ import lombok.Data;
 @Table(name = "like_article")
 public class LikeArticle {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article articleId;
@@ -14,4 +17,11 @@ public class LikeArticle {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users userId;
+
+    public LikeArticle newLikeThat(Users user, Article article) {
+        LikeArticle like = new LikeArticle();
+        like.setArticleId(article);
+        like.setUserId(user);
+        return like;
+    }
 }
