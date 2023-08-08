@@ -19,10 +19,16 @@ public class GetObjService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
 
-    // 해당 유저 불러오기
+    // 해당 유저 불러오기(이름)
     public Users getUser(String userName) {
         return userRepository.findByUsername(userName)
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
+    }
+
+    // 해당 유저 불러오기(아이디)
+    public Users getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     // 해당 게시물 불러오기
