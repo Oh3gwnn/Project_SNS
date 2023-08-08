@@ -1,7 +1,8 @@
 package com.be05.sns.controller;
 
 import com.be05.sns.dto.ResponseDto;
-import com.be05.sns.dto.UserDto;
+import com.be05.sns.dto.user.UserDto;
+import com.be05.sns.dto.user.UserInfo;
 import com.be05.sns.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -36,5 +37,10 @@ public class UserController {
                                      Authentication authentication) {
         userService.uploadImage(profileFile, authentication);
         return response.toMessage("프로필 업로드 성공");
+    }
+
+    @PostMapping("/inquire/{username}")
+    public UserInfo inquireUserInfo(@PathVariable("username") String username) {
+        return userService.inquireUser(username);
     }
 }

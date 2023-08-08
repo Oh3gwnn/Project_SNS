@@ -1,6 +1,7 @@
 package com.be05.sns.service;
 
-import com.be05.sns.dto.UserDto;
+import com.be05.sns.dto.user.UserDto;
+import com.be05.sns.dto.user.UserInfo;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.UserRepository;
 import com.be05.sns.token.JwtUtils;
@@ -65,6 +66,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // 유저 정보 조회
+    public UserInfo inquireUser(String username) {
+        Users user = getObj.getUser(username);
+        return UserInfo.userInfo(user);
+    }
+
     // 해당 유저 찾기
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
@@ -73,7 +80,6 @@ public class UserService {
 
         return UserDto.fromEntity(user);
     }
-
     public boolean userExists(String username) {
         return this.userRepository.existsByUsername(username);
     }
