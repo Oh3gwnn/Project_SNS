@@ -1,27 +1,29 @@
 package com.be05.sns.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data @Entity
+import static jakarta.persistence.FetchType.LAZY;
+
+@Data
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "like_article")
 public class LikeArticle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private LikeId id;
 
-    @ManyToOne
+    @MapsId("articleId")
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "article_id")
     private Article articleId;
 
-    @ManyToOne
+    @MapsId("userId")
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private Users userId;
-
-    public LikeArticle newLikeThat(Users user, Article article) {
-        LikeArticle like = new LikeArticle();
-        like.setArticleId(article);
-        like.setUserId(user);
-        return like;
-    }
 }
