@@ -7,8 +7,8 @@ import lombok.Data;
 @Table(name = "user_friends")
 public class UserFriends {
     @Id
-    @ManyToOne
-    private Users userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "from_user")

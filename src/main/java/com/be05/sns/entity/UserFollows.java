@@ -7,12 +7,12 @@ import lombok.Data;
 @Table(name = "user_follows")
 public class UserFollows {
     @Id
-    @ManyToOne
-    private Users userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
-    private Users follower;
+    private Users fromUser;
 
     @ManyToOne
-    private Users following;
+    private Users toUser;
 }
