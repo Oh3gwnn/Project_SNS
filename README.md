@@ -1,6 +1,6 @@
-# **백엔드 스쿨 5기 미니 개인프로젝트 2 - 멋사SNS**
+# **멋사SNS**
+> 백엔드 스쿨 5기 미니 개인프로젝트 2
 
-<br><br>
 ## ⚙ 기술 스택
 <p>
 <img src="https://img.shields.io/badge/Java_17-007396?style=flat&logo=OpenJDK&logoColor=white">
