@@ -22,7 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ImageFormattingService imageFormatting;
     private final PasswordEncoder passwordEncoder;
-    private final FindUser findUser;
+    private final GetObjService getObj;
     private final JwtUtils jwtUtils;
 
     // 회원가입(유저 생성)
@@ -42,7 +42,7 @@ public class UserService {
         if (dto.getUsername().isEmpty() || dto.getPassword().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디와 비밀번호를 입력해주세요.");
 
-        Users user = findUser.getUsers(dto.getUsername());
+        Users user = getObj.getUser(dto.getUsername());
 
         UserDetails userDetails = loadUserByUsername(dto.getUsername());
         if (!passwordEncoder.matches(dto.getPassword(), userDetails.getPassword())) // 순서 조심
@@ -57,7 +57,7 @@ public class UserService {
     // 프로필 업로드
     public void uploadImage(MultipartFile profileFile,
                             Authentication authentication) {
-        Users user = findUser.getUsers(authentication.getName());
+        Users user = getObj.getUser(authentication.getName());
         String userName = authentication.getName();
         String dirPath = String.format("images/profile/%s/", userName);
         String fileName = imageFormatting.uploadImage(profileFile, userName, dirPath);
