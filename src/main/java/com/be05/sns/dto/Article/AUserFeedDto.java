@@ -18,10 +18,12 @@ public class AUserFeedDto {
 
     private List<String> imageUrls;
     private List<readCommentDto> comments;
+    private Long like;
 
     public static AUserFeedDto fromFeedInfo(Article article,
                                             List<String> imageUrls,
-                                            List<readCommentDto> comments) {
+                                            List<readCommentDto> comments,
+                                            Long likeCount) {
         return AUserFeedDto.builder()
                 .userName(article.getUserId().getUsername())
                 .title(article.getTitle())
@@ -30,6 +32,7 @@ public class AUserFeedDto {
                         .format(DateTimeFormatter.ofPattern("MM월 dd일(E) a HH시 mm분")))
                 .imageUrls(imageUrls)
                 .comments(comments)
+                .like(likeCount)
                 .build();
     }
 }
