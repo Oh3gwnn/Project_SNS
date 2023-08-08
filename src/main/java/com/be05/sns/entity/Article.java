@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data @Entity
 @Table(name = "article")
@@ -23,6 +25,9 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users userId;
+
+    @OneToMany(mappedBy = "articleId")
+    private List<LikeArticle> likes = new ArrayList<>();
 
     private String thumbnail;
 }
