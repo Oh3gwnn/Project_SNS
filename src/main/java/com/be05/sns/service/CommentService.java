@@ -12,6 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -50,6 +53,7 @@ public class CommentService {
 
         // commentRepository.delete(comment) 대신 작성함.
         comment.setContent("[삭제된 댓글입니다.]");
+        comment.setDeletedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         commentRepository.save(comment);
     }
 
