@@ -8,7 +8,6 @@ import com.be05.sns.entity.ArticleImages;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.ArticleImagesRepository;
 import com.be05.sns.repository.ArticleRepository;
-import com.be05.sns.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,15 +30,15 @@ import java.util.Optional;
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleImagesRepository imagesRepository;
-    private final UserRepository userRepository;
     private final ImageFormattingService imageFormatting;
     private final ModelMapper modelMapper;
+    private final FindUser findUser;
 
     // 1. create feed
     public void createFeed(String title, String content,
                            List<MultipartFile> imageFiles,
                            Authentication authentication) {
-        Users user = getUsers(authentication.getName());
+        Users user = findUser.getUsers(authentication.getName());
 
         // 피드 먼저 저장
         ArticleDto articleDto = new ArticleDto().newArticle(user, title, content);
@@ -69,7 +67,7 @@ public class ArticleService {
 
     // 2. writer's all feed (작성자 전체 피드)
     public Page<UserFeedsDto> readAllFeed(String userName) {
-        Users user = getUsers(userName);
+        Users user = findUser.getUsers(userName);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Page<Article> articles = articleRepository
@@ -95,7 +93,7 @@ public class ArticleService {
     public void updateFeed(Long articleId, String title, String content,
                            List<String> deleteImages, List<MultipartFile> imageFiles,
                            Authentication authentication) {
-        Users user = getUsers(authentication.getName());
+        Users user = findUser.getUsers(authentication.getName());
         Article preArticle = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -116,7 +114,7 @@ public class ArticleService {
 
     // 5. 피드 삭제(삭제 시각 기록)
     public void delete(Long articleId, Authentication authentication) {
-        Users user = getUsers(authentication.getName());
+        Users user = findUser.getUsers(authentication.getName());
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -142,12 +140,6 @@ public class ArticleService {
             article.setThumbnail(firstImage.getImageUrl());
             articleRepository.save(article);
         }
-    }
-
-    // 유저 Entity 불러오기
-    private Users getUsers(String userName) {
-        return userRepository.findByUsername(userName)
-                .orElseThrow(() -> new UsernameNotFoundException(userName));
     }
 
     // 비밀번호 검증
