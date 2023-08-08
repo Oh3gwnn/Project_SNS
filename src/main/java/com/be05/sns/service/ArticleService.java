@@ -23,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +31,13 @@ public class ArticleService {
     private final ArticleImagesRepository imagesRepository;
     private final ImageFormattingService imageFormatting;
     private final ModelMapper modelMapper;
-    private final FindUser findUser;
+    private final GetObjService getObj;
 
     // 1. create feed
     public void createFeed(String title, String content,
                            List<MultipartFile> imageFiles,
                            Authentication authentication) {
-        Users user = findUser.getUsers(authentication.getName());
+        Users user = getObj.getUser(authentication.getName());
 
         // 피드 먼저 저장
         ArticleDto articleDto = new ArticleDto().newArticle(user, title, content);
@@ -67,7 +66,7 @@ public class ArticleService {
 
     // 2. writer's all feed (작성자 전체 피드)
     public Page<UserFeedsDto> readAllFeed(String userName) {
-        Users user = findUser.getUsers(userName);
+        Users user = getObj.getUser(userName);
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         Page<Article> articles = articleRepository
@@ -78,24 +77,19 @@ public class ArticleService {
 
     // 3. read a feed (피드 하나 읽어오기)
     public AUserFeedDto read(Long articleId) {
-        Optional<Article> feed = articleRepository.findById(articleId);
+        Article feed = getObj.getArticle(articleId);
 
-        if (feed.isPresent()) {
-            List<ArticleImages> images = imagesRepository.findAllByArticleId_Id(articleId);
-            List<String> imageUrls = images.stream()
-                    .map(ArticleImages::getImageUrl).toList();
-            return AUserFeedDto.fromFeedInfo(feed.get(), imageUrls);
-        }
-        else throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        List<ArticleImages> images = imagesRepository.findAllByArticleId_Id(articleId);
+        List<String> imageUrls = images.stream()
+                .map(ArticleImages::getImageUrl).toList();
+        return AUserFeedDto.fromFeedInfo(feed, imageUrls);
     }
-
     // 4. 피드 업데이트(제목, 내용, 이미지 수정 및 삭제)
     public void updateFeed(Long articleId, String title, String content,
                            List<String> deleteImages, List<MultipartFile> imageFiles,
                            Authentication authentication) {
-        Users user = findUser.getUsers(authentication.getName());
-        Article preArticle = articleRepository.findById(articleId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Users user = getObj.getUser(authentication.getName());
+        Article preArticle = getObj.getArticle(articleId);
 
         validatePassword(user, preArticle); // 비밀번호 확인
 
@@ -114,9 +108,8 @@ public class ArticleService {
 
     // 5. 피드 삭제(삭제 시각 기록)
     public void delete(Long articleId, Authentication authentication) {
-        Users user = findUser.getUsers(authentication.getName());
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Users user = getObj.getUser(authentication.getName());
+        Article article = getObj.getArticle(articleId);
 
         validatePassword(user, article); // 비밀번호 확인
 
