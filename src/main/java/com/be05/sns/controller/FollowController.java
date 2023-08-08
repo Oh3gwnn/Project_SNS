@@ -8,15 +8,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/{username}")
 public class FollowController {
     private final ResponseDto response;
     private final FollowService followService;
 
-    @PostMapping("/follow")
-    public ResponseDto createComment(@PathVariable("username") String username,
+    @PostMapping("/follow/{username}")
+    public ResponseDto followUser(@PathVariable("username") String username,
                                      Authentication authentication) {
-        followService.requestFollow(username, authentication);
-        return response.toMessage(username +"님을 팔로우 하셨습니다.");
+        return response.toMessage(username +
+                followService.requestFollow(username, authentication));
+    }
+
+    @PostMapping("/unfollow/{username}")
+    public ResponseDto unfollowUser(@PathVariable("username") String username,
+                                    Authentication authentication) {
+        followService.requestUnfollow(username, authentication);
+        return response.toMessage(username +"님의 팔로우를 해제하셨습니다.");
     }
 }
