@@ -99,6 +99,8 @@ public class ArticleService {
         Article preArticle = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        validatePassword(user, preArticle); // 비밀번호 확인
+
         if (!title.isEmpty()) preArticle.setTitle(title);
         if (!content.isEmpty()) preArticle.setContent(content);
         if (deleteImages != null && !deleteImages.isEmpty()) {
@@ -113,9 +115,13 @@ public class ArticleService {
     }
 
     // 5. 피드 삭제(삭제 시각 기록)
-    public void delete(Long articleId) {
+    public void delete(Long articleId, Authentication authentication) {
+        Users user = getUsers(authentication.getName());
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        validatePassword(user, article); // 비밀번호 확인
+
         article.setDeletedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
         articleRepository.save(article);
     }
@@ -142,5 +148,11 @@ public class ArticleService {
     private Users getUsers(String userName) {
         return userRepository.findByUsername(userName)
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
+    }
+
+    // 비밀번호 검증
+    private void validatePassword(Users user, Article article) {
+        if (!user.getPassword().equals(article.getUserId().getPassword()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 }

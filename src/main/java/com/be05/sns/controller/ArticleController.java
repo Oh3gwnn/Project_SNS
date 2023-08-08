@@ -39,8 +39,9 @@ public class ArticleController {
     }
 
     @DeleteMapping("/read/{articleId}")
-    public ResponseDto deleteFeed(@PathVariable("articleId") Long articleId) {
-        articleService.delete(articleId);
+    public ResponseDto deleteFeed(@PathVariable("articleId") Long articleId,
+                                  Authentication authentication) {
+        articleService.delete(articleId, authentication);
         return response.toMessage("피드가 삭제되었습니다.");
     }
 
