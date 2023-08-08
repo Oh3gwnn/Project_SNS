@@ -1,13 +1,7 @@
 package com.be05.sns.service;
 
-import com.be05.sns.entity.Article;
-import com.be05.sns.entity.Comment;
-import com.be05.sns.entity.UserFollows;
-import com.be05.sns.entity.Users;
-import com.be05.sns.repository.ArticleRepository;
-import com.be05.sns.repository.CommentRepository;
-import com.be05.sns.repository.FollowRepository;
-import com.be05.sns.repository.UserRepository;
+import com.be05.sns.entity.*;
+import com.be05.sns.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +15,7 @@ public class GetObjService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
     private final FollowRepository followRepository;
+    private final FriendRepository friendRepository;
 
     // 해당 유저 불러오기(이름)
     public Users getUser(String userName) {
@@ -50,4 +45,11 @@ public class GetObjService {
     public UserFollows getFollow(Long follower, Long following) {
         return followRepository.findByFollower_IdAndFollowing_Id(follower, following);
     }
+
+    // 해당 유저의 친구 신청 불러오기
+    public UserFriends getFriend(Long fromUser, Long toUser) {
+        return friendRepository.findByFromUser_IdAndToUser_Id(fromUser, toUser);
+    }
+
+
 }
