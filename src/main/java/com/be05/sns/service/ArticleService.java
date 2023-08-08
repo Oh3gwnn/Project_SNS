@@ -3,11 +3,14 @@ package com.be05.sns.service;
 import com.be05.sns.dto.Article.AUserFeedDto;
 import com.be05.sns.dto.Article.UserFeedsDto;
 import com.be05.sns.dto.ArticleDto;
+import com.be05.sns.dto.comment.readCommentDto;
 import com.be05.sns.entity.Article;
 import com.be05.sns.entity.ArticleImages;
+import com.be05.sns.entity.Comment;
 import com.be05.sns.entity.Users;
 import com.be05.sns.repository.ArticleImagesRepository;
 import com.be05.sns.repository.ArticleRepository;
+import com.be05.sns.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
     private final ArticleImagesRepository imagesRepository;
     private final ImageFormattingService imageFormatting;
     private final ModelMapper modelMapper;
@@ -82,8 +86,14 @@ public class ArticleService {
         List<ArticleImages> images = imagesRepository.findAllByArticleId_Id(articleId);
         List<String> imageUrls = images.stream()
                 .map(ArticleImages::getImageUrl).toList();
-        return AUserFeedDto.fromFeedInfo(feed, imageUrls);
+
+        List<Comment> comments = commentRepository.findAllByArticleId_Id(articleId);
+        List<readCommentDto> commentList = comments.stream()
+                .map(readCommentDto::fromComment).toList();
+
+        return AUserFeedDto.fromFeedInfo(feed, imageUrls, commentList);
     }
+
     // 4. 피드 업데이트(제목, 내용, 이미지 수정 및 삭제)
     public void updateFeed(Long articleId, String title, String content,
                            List<String> deleteImages, List<MultipartFile> imageFiles,
