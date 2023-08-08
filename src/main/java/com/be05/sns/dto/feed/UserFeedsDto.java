@@ -1,4 +1,4 @@
-package com.be05.sns.dto.article;
+package com.be05.sns.dto.feed;
 
 import com.be05.sns.entity.Article;
 import lombok.Builder;
