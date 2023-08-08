@@ -25,7 +25,7 @@ public class ArticleController {
             @RequestPart(value = "image", required = false) List<MultipartFile> imageFiles,
             Authentication authentication) {
         articleService.createFeed(title, content, imageFiles, authentication);
-        return response.toMessage("피드를 생성했습니다.");
+        return response.toMessage("피드를 생성하였습니다.");
     }
 
     @GetMapping("/{userName}")
@@ -36,5 +36,19 @@ public class ArticleController {
     @GetMapping("/read/{articleId}")
     public AUserFeedDto readFeed(@PathVariable("articleId") Long articleId) {
         return articleService.read(articleId);
+    }
+
+    @PutMapping("/read/{articleId}")
+    public ResponseDto updateFeed(
+            @PathVariable("articleId") Long articleId,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) List<String> deleteImage,
+            @RequestPart(value = "image", required = false)
+            List<MultipartFile> imageFiles,
+            Authentication authentication) {
+        articleService.updateFeed
+                (articleId, title, content, deleteImage, imageFiles, authentication);
+        return response.toMessage("피드를 수정하였습니다.");
     }
 }
