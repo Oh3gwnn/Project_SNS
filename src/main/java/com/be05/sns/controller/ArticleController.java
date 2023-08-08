@@ -38,6 +38,12 @@ public class ArticleController {
         return articleService.read(articleId);
     }
 
+    @DeleteMapping("/read/{articleId}")
+    public ResponseDto deleteFeed(@PathVariable("articleId") Long articleId) {
+        articleService.delete(articleId);
+        return response.toMessage("피드가 삭제되었습니다.");
+    }
+
     @PutMapping("/read/{articleId}")
     public ResponseDto updateFeed(
             @PathVariable("articleId") Long articleId,

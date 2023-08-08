@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +67,7 @@ public class ArticleService {
         }
     }
 
-    // 2. writer all feed
+    // 2. writer's all feed (작성자 전체 피드)
     public Page<UserFeedsDto> readAllFeed(String userName) {
         Users user = getUsers(userName);
 
@@ -76,7 +78,7 @@ public class ArticleService {
         return articles.map(UserFeedsDto::fromAllFeed);
     }
 
-    // 3. read a feed
+    // 3. read a feed (피드 하나 읽어오기)
     public AUserFeedDto read(Long articleId) {
         Optional<Article> feed = articleRepository.findById(articleId);
 
@@ -89,7 +91,7 @@ public class ArticleService {
         else throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    // 피드 업데이트
+    // 4. 피드 업데이트(제목, 내용, 이미지 수정 및 삭제)
     public void updateFeed(Long articleId, String title, String content,
                            List<String> deleteImages, List<MultipartFile> imageFiles,
                            Authentication authentication) {
@@ -108,6 +110,14 @@ public class ArticleService {
         }
         articleRepository.save(preArticle);
         saveImagesAndThumbnail(imageFiles, preArticle);
+    }
+
+    // 5. 피드 삭제(삭제 시각 기록)
+    public void delete(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        article.setDeletedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+        articleRepository.save(article);
     }
 
     // 이미지, 썸네일 저장 메서드
