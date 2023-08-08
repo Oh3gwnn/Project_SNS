@@ -1,4 +1,4 @@
-package com.be05.sns.dto;
+package com.be05.sns.dto.user;
 
 import com.be05.sns.entity.Users;
 import lombok.AllArgsConstructor;

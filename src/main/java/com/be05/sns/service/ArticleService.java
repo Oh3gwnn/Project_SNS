@@ -1,8 +1,8 @@
 package com.be05.sns.service;
 
-import com.be05.sns.dto.Article.AUserFeedDto;
-import com.be05.sns.dto.Article.UserFeedsDto;
-import com.be05.sns.dto.ArticleDto;
+import com.be05.sns.dto.article.AUserFeedDto;
+import com.be05.sns.dto.article.UserFeedsDto;
+import com.be05.sns.dto.article.ArticleDto;
 import com.be05.sns.dto.comment.readCommentDto;
 import com.be05.sns.entity.*;
 import com.be05.sns.repository.ArticleImagesRepository;

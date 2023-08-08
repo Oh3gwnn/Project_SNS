@@ -1,6 +1,6 @@
 package com.be05.sns.token;
 
-import com.be05.sns.dto.UserDto;
+import com.be05.sns.dto.user.UserDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import lombok.NonNull;

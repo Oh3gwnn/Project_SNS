@@ -1,4 +1,4 @@
-package com.be05.sns.dto.Article;
+package com.be05.sns.dto.article;
 
 import com.be05.sns.dto.comment.readCommentDto;
 import com.be05.sns.entity.Article;

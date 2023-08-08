@@ -1,5 +1,6 @@
-package com.be05.sns.dto;
+package com.be05.sns.dto.comment;
 
+import com.be05.sns.entity.Article;
 import com.be05.sns.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,21 +14,19 @@ import java.time.ZoneId;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleDto {
+public class CommentDto {
     private Long id;
-    private String title;
     private String content;
+    private Article articleId;
+    private Users userId;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
 
-    private Users userId;
-
-    // 새로운 article 생성
-    public ArticleDto newArticle(Users user, String title, String content) {
-        return ArticleDto.builder()
-                .userId(user)
-                .title(title)
+    public CommentDto newComment(Users user, Article article) {
+        return CommentDto.builder()
                 .content(content)
+                .userId(user)
+                .articleId(article)
                 .createdAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .build();
     }
