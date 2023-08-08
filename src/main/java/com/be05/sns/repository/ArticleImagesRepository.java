@@ -10,4 +10,5 @@ import java.util.List;
 public interface ArticleImagesRepository extends JpaRepository<ArticleImages, Long> {
     ArticleImages findFirstByArticleId_IdOrderByIdAsc(Long articleId);
     List<ArticleImages> findAllByArticleId_Id(Long articleId);
+    ArticleImages findByImageUrlContaining(String fileName);
 }
