@@ -1,5 +1,5 @@
-# **TDD를 통한 SNS 구현**
-> 테스트 주도 개발을 통해 SNS를 구현해보는 프로젝트
+# **SNS, REST API 구현**
+> SNS를 REST API로 구현해보는 프로젝트
 
 <br><br>
 
